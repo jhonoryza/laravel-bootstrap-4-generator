@@ -10,6 +10,12 @@ DB Supports :
 - Laravel 10/11
 - PHP 8.2
 
+## Install
+
+```bash
+composer require --dev jhonoryza/rgb-laravelwebbasecode-gen
+```
+
 ## Start
 
 1. create and run your migration
