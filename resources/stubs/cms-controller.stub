@@ -1,0 +1,84 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ modelNamespace }};
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use {{ requestNamespace }};
+use {{ serviceNamespace }};
+use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Routing\Controllers\HasMiddleware;
+
+class {{ className }} extends Controller implements HasMiddleware
+{
+    public static function middleware()
+    {
+        return ['auth:admin', 'permission:{{ modelName }}'];
+    }
+
+    public function __construct(public {{ serviceName }} ${{ camelServiceName }})
+    {
+        //        
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): View
+    {
+        ${{ camelDummies }} = $this->{{ camelServiceName }}->getList($request);
+
+        return view('cms.pages.{{ kebabDummy }}.index', compact('{{ camelDummies }}'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create(): View
+    {
+        return view('cms.pages.{{ kebabDummy }}.create');
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store({{ storeRequestName }} $request): RedirectResponse
+    {
+        $this->{{ camelServiceName }}->create($request);
+
+        return redirect(route('cms.{{ kebabDummy }}.index'))
+            ->with('success', '{{ modelName }} successfully created.');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit({{ modelName }} ${{ camelDummy }}): View
+    {
+        return view('cms.pages.{{ kebabDummy }}.edit', compact('{{ camelDummy }}'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update({{ storeRequestName }} $request, {{ modelName }} ${{ camelDummy }}): RedirectResponse
+    {
+        $this->{{ camelServiceName }}->update(${{ camelDummy }}, $request);
+
+        return redirect(route('cms.{{ kebabDummy }}.index'))
+            ->with('success', '{{ modelName }} successfully updated.');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy({{ modelName }} ${{ camelDummy }}): RedirectResponse
+    {
+        $this->{{ camelServiceName }}->delete(${{ camelDummy }});
+
+        return redirect(route('cms.{{ kebabDummy }}.index'))
+            ->with('success', '{{ modelName }} successfully deleted.');
+    }
+}

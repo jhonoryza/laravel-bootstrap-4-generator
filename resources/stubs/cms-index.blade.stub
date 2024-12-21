@@ -1,0 +1,99 @@
+<x-cms-layout title-postfix="{{ className }} List">
+  <x-cms-header-auth>
+    <div class="row align-items-center py-4">
+      <div class="col-lg-6 col-7">
+
+        <h6 class="h2 text-white d-inline-block mb-0">{{ __('{{ className }} Management') }}</h6>
+
+        <nav aria-label="breadcrumb" class="d-none d-md-inline-block ml-md-4">
+          <ol class="breadcrumb breadcrumb-links breadcrumb-dark">
+            <li class="breadcrumb-item"><a href="{{ route('cms.{{ kebabDummy }}.index') }}"><i class="fa fa-id-card"></i></a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ __('{{ className }} Management') }}</li>
+          </ol>
+        </nav>
+
+      </div>
+
+      <div class="col-lg-6 col-5 text-right">
+        <a href="{{ route('cms.{{ kebabDummy }}.create') }}" class="btn btn-sm btn-neutral">{{ __('Add New {{ className }}') }}</a>
+      </div>
+
+    </div>
+  </x-cms-header-auth>
+
+  <div class="container-fluid mt--6">
+
+    <div class="row">
+      <div class="col-12">
+
+        <div class="card">
+
+          <div class="card-header">
+            <div class="row align-items-center">
+              <div class="col-8">
+                <h3>{{ __('{{ className }} List') }}</h3>
+              </div>
+
+              <div class="col-4 text-right">
+                <a href="{{ route('cms.{{ kebabDummy }}.index') }}" class="btn btn-sm btn-primary">
+                  {{ __('Clear search and filter') }}
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body py-4">
+
+            @if (session('success'))
+              <x-cms::alert class="alert-success">
+                {{ session('success') }}
+              </x-cms::alert>
+            @elseif (session('failed'))
+              <x-cms::alert class="alert-danger">
+                {{ session('failed') }}
+              </x-cms::alert>
+            @endif
+
+            <div class="table-responsive">
+              <table class="table align-items-center table-flush">
+                <thead class="thead-light">
+                  <tr>
+                    <th class="js-sortable" data-sort-by="id">
+                      Id
+                    </th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach (${{ camelDummies }} as ${{ camelDummy }})
+                    <tr>
+                      <td>{{ ${{ camelDummy }}->id }}</td>
+                      <td>
+                        <a href="{{ route('cms.{{ kebabDummy }}.edit', ${{ camelDummy }}->id) }}" class="btn btn-warning" title="Edit {{ className }}">
+                          <span class="btn-inner--icon">
+                            <i class="fa fa-pen"></i>
+                          </span>
+                        </a>
+                        <button class="btn btn-danger btn-delete" title="Delete {{ className }}" data-delete-url="{{ route('cms.{{ kebabDummy }}.destroy', ${{ camelDummy }}->id) }}">
+                          <span class="btn-inner--icon">
+                            <i class="fa fa-trash-alt"></i>
+                          </span>
+                        </button>
+                      </td>
+                    </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+
+            <x-cms::form-delete resource="{{ kebabDummy }}" selector=".btn-delete" />
+          </div>
+          <x-cms::filters.button-pagination :data="${{ camelDummies }}" />
+        </div>
+
+      </div>
+    </div>
+
+    <x-cms-footer-auth />
+  </div>
+</x-cms-layout>

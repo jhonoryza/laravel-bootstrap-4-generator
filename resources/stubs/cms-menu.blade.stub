@@ -1,0 +1,1 @@
+<x-cms::menu.item text="{{ className }} Management" href="{{ route('cms.{{ kebabDummy }}.index') }}" icon="fa fa-id-card text-green" active="cms/{{ kebabDummy }}*" />

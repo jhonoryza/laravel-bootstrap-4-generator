@@ -1,0 +1,33 @@
+{
+    "name": "jhonoryza/rgb-laravelwebbasecode-gen",
+    "type": "library",
+    "license": "MIT",
+    "version": "0.0.1",
+    "autoload": {
+        "psr-4": {
+            "Jhonoryza\\Rgb\\BasecodeGen\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Jhonoryza\\Rgb\\BasecodeGen\\BasecodeGenProvider"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "fajar sidik priatna",
+            "email": "jardik.oryza@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": "^8.2",
+        "illuminate/support": "^10.0|^11.0",
+        "illuminate/console": "^10.0|^11.0"
+    },
+    "require-dev": {
+        "orchestra/testbench": "^8.0|^9.0"
+    }
+}

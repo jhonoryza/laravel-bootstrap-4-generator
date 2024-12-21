@@ -1,0 +1,42 @@
+<?php
+
+namespace {{ namespace }};
+
+use {{ requestNamespace }};
+use {{ modelNamespace }};
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Http\Request;
+
+class {{ className }}
+{
+    public function getList(Request $request): LengthAwarePaginator
+    {
+        $perPage = is_numeric($request->per_page) ? $request->per_page : 10;
+        $sort = strtolower($request->sort);
+        $sort = collect(['asc', 'desc'])->contains($sort) ? $sort : 'asc';
+
+        return {{ modelName }}::query()
+            ->when($request->search, fn($query) => $query->where('name', 'ILIKE', "%\$request->search%"))
+            ->orderBy('id', $sort)
+            ->paginate($perPage);
+    }
+
+    public function create({{ storeRequestName }} $request): {{ modelName }}
+    {
+        return {{ modelName }}::query()
+            ->create($request->validated());
+    }
+
+    public function update({{ modelName }} ${{ camelDummy }}, {{ storeRequestName }} $request): {{ modelName }}
+    {
+        ${{ camelDummy }}
+            ->query()
+            ->update($request->validated());
+        return ${{ camelDummy }};
+    }
+
+    public function delete({{ modelName }} ${{ camelDummy }}): void
+    {
+        ${{ camelDummy }}->delete();
+    }
+}
