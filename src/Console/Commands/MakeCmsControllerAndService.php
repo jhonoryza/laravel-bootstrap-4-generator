@@ -285,10 +285,10 @@ class MakeCmsControllerAndService extends Command
             '{{ camelDummies }}' => $this->getCamelDummies(),
             '{{ columnHead }}' => $this->getFillableColumnList()
                 ->map(fn($item) => sprintf($colHeadTemplate, $item['name'], Str::title($item['name'])))
-                ->implode(",\n\t\t\t\t"),
+                ->implode("\n\t\t\t\t"),
             '{{ columnBody }}' => $this->getFillableColumnList()
                 ->map(fn($item) => sprintf($colBodyTemplate, $this->getCamelDummy(), $item['name']))
-                ->implode(",\n\t\t\t\t")
+                ->implode("\n\t\t\t\t")
         ];
 
         $this->generateFile($stubPath, $filePath, $replacements);
@@ -315,7 +315,7 @@ class MakeCmsControllerAndService extends Command
             '{{ kebabDummy }}' => $this->getKebabDummy(),
             '{{ columnFields }}' => $this->getFillableColumnList()
                 ->map(fn($item) => sprintf($template, $item['name'], Str::title($item['name'])))
-                ->implode(",\n\t\t\t\t"),
+                ->implode("\n\t\t\t\t"),
         ];
 
         $this->generateFile($stubPath, $filePath, $replacements);
@@ -349,7 +349,7 @@ class MakeCmsControllerAndService extends Command
                     $item['name'],
                     Str::title($item['name'])
                 ))
-                ->implode(",\n\t\t\t\t"),
+                ->implode("\n\t\t\t\t"),
         ];
 
         $this->generateFile($stubPath, $filePath, $replacements);
