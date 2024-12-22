@@ -3,6 +3,7 @@
 namespace Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns;
 
 use ErrorException;
+use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\Schema\Grammars\MySqlGrammar;
 use Illuminate\Database\Schema\Grammars\PostgresGrammar;
 use Illuminate\Database\Schema\MySqlBuilder;
@@ -11,11 +12,14 @@ use Illuminate\Support\Collection;
 
 trait ColumnTrait
 {
+    /**
+     * @throws ErrorException
+     */
     protected function getColumnList(): Collection
     {
         $table = $this->getTableName();
 
-        /**@var \Illuminate\Database\DatabaseManager */
+        /**@var DatabaseManager $database */
         $database = app('db');
 
         $schemaBuilder = $database->getSchemaBuilder();
@@ -24,7 +28,7 @@ trait ColumnTrait
             throw new ErrorException('Unsupported database / schema builder.');
         }
 
-        /**@var \Illuminate\Database\Schema\Grammars\PostgresGrammar */
+        /**@var PostgresGrammar $grammar */
         $grammar = $schemaBuilder instanceof PostgresBuilder ?
             new PostgresGrammar() : new MySqlGrammar();
 
@@ -38,14 +42,17 @@ trait ColumnTrait
         return collect($columnList);
     }
 
+    /**
+     * @throws ErrorException
+     */
     protected function getFillableColumnList(): Collection
     {
         $columns = [];
         $columnList = $this->getColumnList()->toArray();
 
-        foreach ($columnList as $key => $column) {
+        foreach ($columnList as $column) {
             if ($this->isFillable($column['name'] ?? null)) {
-                $columns[] = $columnList[$key] ?? null;
+                $columns[] = $column;
             }
         }
 
@@ -53,7 +60,7 @@ trait ColumnTrait
         return collect($columns);
     }
 
-    protected static $notFillableColumns = [
+    protected static array $notFillableColumns = [
         'id',
         'created_at',
         'updated_at',

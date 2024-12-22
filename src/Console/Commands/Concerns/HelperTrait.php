@@ -9,12 +9,13 @@ trait HelperTrait
 {
     /**
      * Helper to generate files from stubs.
+     * @throws Exception
      */
     protected function generateFile(string $stubPath, string $destinationPath, array $replacements): void
     {
         if (!File::exists($stubPath)) {
-            $this->error("Stub file not found: {$stubPath}");
-            throw new Exception("Stub file not found: {$stubPath}");
+            $this->error("Stub file not found: $stubPath");
+            throw new Exception("Stub file not found: $stubPath");
         }
 
         $template = File::get($stubPath);
@@ -28,12 +29,13 @@ trait HelperTrait
 
     /**
      * Helper to append files from stubs.
+     * @throws Exception
      */
     protected function appendFile(string $stubPath, string $destinationPath, array $replacements): void
     {
         if (!File::exists($stubPath)) {
-            $this->error("Stub file not found: {$stubPath}");
-            throw new Exception("Stub file not found: {$stubPath}");
+            $this->error("Stub file not found: $stubPath");
+            throw new Exception("Stub file not found: $stubPath");
         }
 
         $template = File::get($stubPath);
@@ -50,12 +52,13 @@ trait HelperTrait
 
     /**
      * Helper to append files from stubs.
+     * @throws Exception
      */
     protected function replaceContent(string $stubPath,  array $replacements): string
     {
         if (!File::exists($stubPath)) {
-            $this->error("Stub file not found: {$stubPath}");
-            throw new Exception("Stub file not found: {$stubPath}");
+            $this->error("Stub file not found: $stubPath");
+            throw new Exception("Stub file not found: $stubPath");
         }
 
         $template = File::get($stubPath);
@@ -78,9 +81,9 @@ trait HelperTrait
     }
 
     /**
-     * Helper generate regex patern
+     * Helper generate regex pattern
      */
-    private function generatePattern($code)
+    private function generatePattern($code): string
     {
         $specialChars = ['\\', '/', '.', '*', '+', '?', '|', '(', ')', '[', ']', '{', '}', '^', '$', '-'];
 
