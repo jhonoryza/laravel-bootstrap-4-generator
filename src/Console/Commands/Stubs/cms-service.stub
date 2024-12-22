@@ -16,7 +16,7 @@ class {{ className }}
         $sort = collect(['asc', 'desc'])->contains($sort) ? $sort : 'asc';
 
         return {{ modelName }}::query()
-            ->when($request->search, fn($query) => $query->where('name', 'ILIKE', "%\$request->search%"))
+            ->when($request->search, fn($query) => $query->where('name', 'ILIKE', "%$request->search%"))
             ->orderBy('id', $sort)
             ->paginate($perPage);
     }

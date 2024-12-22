@@ -61,6 +61,7 @@
                     <th class="js-sortable" data-sort-by="id">
                       Id
                     </th>
+                    {{ columnHead }}
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -68,6 +69,7 @@
                   @foreach (${{ camelDummies }} as ${{ camelDummy }})
                     <tr>
                       <td>{{ ${{ camelDummy }}->id }}</td>
+                      {{ columnBody }}
                       <td>
                         <a href="{{ route('cms.{{ kebabDummy }}.edit', ${{ camelDummy }}->id) }}" class="btn btn-warning" title="Edit {{ className }}">
                           <span class="btn-inner--icon">

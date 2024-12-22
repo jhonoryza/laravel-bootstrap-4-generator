@@ -43,6 +43,8 @@
             <form role="form" action="{{ route('cms.{{ kebabDummy }}.store') }}" method="POST" enctype="multipart/form-data">
               @csrf
 
+              {{ columnFields }}
+
               <div class="float-right">
                 <a href="{{ route('cms.{{ kebabDummy }}.index') }}" class="btn btn-warning">
                   {{ __('Cancel') }}

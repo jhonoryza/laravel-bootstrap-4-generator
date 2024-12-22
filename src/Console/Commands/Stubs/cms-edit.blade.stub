@@ -43,6 +43,8 @@
               @csrf
               @method('PUT')
 
+              {{ columnFields }}
+
               <div class="float-right">
                 <a href="{{ route('cms.{{ kebabDummy }}.index') }}" class="btn btn-warning">
                   {{ __('Cancel') }}
