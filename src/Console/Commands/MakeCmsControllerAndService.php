@@ -2,7 +2,6 @@
 
 namespace Jhonoryza\Rgb\BasecodeGen\Console\Commands;
 
-use Exception;
 use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\ColumnTrait;
 use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\FactoryTrait;
 use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\ReplaceKeywordsTrait;
@@ -12,6 +11,7 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\HelperTrait;
+use Exception;
 
 use function Laravel\Prompts\text;
 
@@ -28,7 +28,7 @@ class MakeCmsControllerAndService extends Command
 
     protected $description = 'Generate a CMS files with predefined structure';
 
-    protected string | null $module = null;
+    protected string|null $module = null;
 
     public function handle(): void
     {
@@ -36,47 +36,54 @@ class MakeCmsControllerAndService extends Command
         if ($this->module == null) {
             $this->module = text(
                 label: 'module name',
-                required: true,
-                placeholder: 'Category'
+                placeholder: 'Category',
+                required: true
             );
         }
         $this->module = Str::camel(Str::singular($this->module));
 
         // $this->generateMigration();
-        $this->generateModel();
-        $this->generateFactory();
-        $this->generateSeeder();
-        $this->updateDatabaseSeeder();
-        $this->generateService();
-        $this->generateRequest();
-        $this->generateController();
-        $this->generateIndexBlade();
-        $this->generateCreateBlade();
-        $this->generateEditBlade();
-        $this->updateRoute();
-        $this->updateMenu();
-        $this->updatePermission();
+        try {
+            $this->generateModel();
+            $this->generateFactory();
+            $this->generateSeeder();
+            $this->updateDatabaseSeeder();
+            $this->generateService();
+            $this->generateRequest();
+            $this->generateController();
+            $this->generateIndexBlade();
+            $this->generateCreateBlade();
+            $this->generateEditBlade();
+            $this->updateRoute();
+            $this->updateMenu();
+            $this->updatePermission();
+        } catch (Exception $exception) {
+            $this->error($exception->getMessage());
+        }
     }
 
-    private function generateMigration(): void
-    {
-        $tableName = $this->getSnakeDummies();
+//    private function generateMigration(): void
+//    {
+//        $tableName = $this->getSnakeDummies();
+//
+//        $migrationPath = database_path("migrations/" . date('Y_m_d_His') . "_create_{$tableName}_table.php");
+//        $migrationStub = $this->getStubPath('cms-migration.stub');
+//        $this->generateFile($migrationStub, $migrationPath, [
+//            '{{ tableName }}' => $tableName,
+//        ]);
+//        $this->info("Migration for table {$tableName} created successfully.");
+//    }
 
-        $migrationPath = database_path("migrations/" . date('Y_m_d_His') . "_create_{$tableName}_table.php");
-        $migrationStub = $this->getStubPath('cms-migration.stub');
-        $this->generateFile($migrationStub, $migrationPath, [
-            '{{ tableName }}' => $tableName,
-        ]);
-        $this->info("Migration for table {$tableName} created successfully.");
-    }
-
+    /**
+     * @throws Exception
+     */
     private function generateModel(): void
     {
         $modelName = $this->getStudlyDummy();
         $namespace = "App\Models";
 
         $stubPath = $this->getStubPath('cms-model.stub');
-        $filePath = app_path("Models/{$modelName}.php");
+        $filePath = app_path("Models/$modelName.php");
 
         $replacements = [
             '{{ namespace }}' => $namespace,
@@ -88,15 +95,18 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($stubPath, $filePath, $replacements);
 
-        $this->info("Model {$modelName} created successfully!");
+        $this->info("Model $modelName created successfully!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateFactory(): void
     {
         $modelName = $this->getStudlyDummy();
         $factoryName = "{$modelName}Factory";
 
-        $factoryPath = database_path("factories/{$factoryName}.php");
+        $factoryPath = database_path("factories/$factoryName.php");
         $factoryStub = $this->getStubPath('cms-factory.stub');
 
         $replacements = [
@@ -109,15 +119,18 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($factoryStub, $factoryPath, $replacements);
 
-        $this->info("Factory {$factoryName} created successfully.");
+        $this->info("Factory $factoryName created successfully.");
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateSeeder(): void
     {
         $modelName = $this->getStudlyDummy();
         $seederName = "{$modelName}Seeder";
 
-        $seederPath = database_path("seeders/{$seederName}.php");
+        $seederPath = database_path("seeders/$seederName.php");
         $seederStub = $this->getStubPath('cms-seeder.stub');
 
         $replacements = [
@@ -127,9 +140,12 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($seederStub, $seederPath, $replacements);
 
-        $this->info("Seeder {$seederName} created successfully.");
+        $this->info("Seeder $seederName created successfully.");
     }
 
+    /**
+     * @throws Exception
+     */
     private function updateDatabaseSeeder(): void
     {
         $modelName = $this->getStudlyDummy();
@@ -141,20 +157,21 @@ class MakeCmsControllerAndService extends Command
             '{{ className }}' => $seederName,
         ];
 
-        $fileContent = File::get($dbSeederStub);
         $template = $this->replaceContent($dbSeederStub, $replacements);
-
         $fileContent = File::get($dbSeederPath);
 
         $isExists = preg_match($this->generatePattern($template), $fileContent);
         if (!$isExists) {
-            $fileContent = preg_replace('/\$this\-\>call\(AdminsTableSeeder\:\:class\)\;/', "\$this->call(AdminsTableSeeder::class);\n\t\t{$template}", $fileContent, 1);
+            $fileContent = preg_replace('/\$this->call\(AdminsTableSeeder::class\);/', "\$this->call(AdminsTableSeeder::class);\n\t\t$template", $fileContent, 1);
             File::put($dbSeederPath, $fileContent);
         }
 
         $this->info("DatabaseSeeder updated successfully.");
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateRequest(): void
     {
         $modelName = $this->getStudlyDummy();
@@ -174,9 +191,12 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($stubPath, $filePath, $replacements);
 
-        $this->info("Request {$className} created successfully!");
+        $this->info("Request $className created successfully!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateService(): void
     {
         $modelName = $this->getStudlyDummy();
@@ -202,9 +222,12 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($stubPath, $filePath, $replacements);
 
-        $this->info("Service {$className} created successfully!");
+        $this->info("Service $className created successfully!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateController(): void
     {
         $modelName = $this->getStudlyDummy();
@@ -218,7 +241,7 @@ class MakeCmsControllerAndService extends Command
         $requestNamespace = "App\Http\Requests\CMS\\$modelName\\$storeRequestName";
 
         $stubPath = $this->getStubPath('cms-controller.stub');
-        $filePath = app_path("Http/Controllers/CMS/{$className}.php");
+        $filePath = app_path("Http/Controllers/CMS/$className.php");
 
         $replacements = [
             '{{ namespace }}' => $namespace,
@@ -237,9 +260,12 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($stubPath, $filePath, $replacements);
 
-        $this->info("Controller {$className} created successfully!");
+        $this->info("Controller $className created successfully!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateIndexBlade(): void
     {
         $className = $this->getStudlyDummy();
@@ -247,7 +273,7 @@ class MakeCmsControllerAndService extends Command
         $namespace = "views/cms/pages";
 
         $stubPath = $this->getStubPath('cms-index.blade.stub');
-        $filePath = resource_path("{$namespace}/{$fileName}");
+        $filePath = resource_path("$namespace/$fileName");
 
         $colHeadTemplate = '<th class="js-sortable" data-sort-by="%s">%s</th>';
         $colBodyTemplate = '<td>{{ $%s->%s }}</td>';
@@ -267,9 +293,12 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($stubPath, $filePath, $replacements);
 
-        $this->info("Blade file {$fileName} created successfully!");
+        $this->info("Blade file $fileName created successfully!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateCreateBlade(): void
     {
         $className = $this->getStudlyDummy();
@@ -277,7 +306,7 @@ class MakeCmsControllerAndService extends Command
         $namespace = "views/cms/pages";
 
         $stubPath = $this->getStubPath('cms-create.blade.stub');
-        $filePath = resource_path("{$namespace}/{$fileName}");
+        $filePath = resource_path("$namespace/$fileName");
 
         $template = '<x-cms::input.text name="%s" label="%s" :required="true" />';
 
@@ -291,9 +320,12 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($stubPath, $filePath, $replacements);
 
-        $this->info("Blade file {$fileName} created successfully!");
+        $this->info("Blade file $fileName created successfully!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function generateEditBlade(): void
     {
         $className = $this->getStudlyDummy();
@@ -301,7 +333,7 @@ class MakeCmsControllerAndService extends Command
         $namespace = "views/cms/pages";
 
         $stubPath = $this->getStubPath('cms-edit.blade.stub');
-        $filePath = resource_path("{$namespace}/{$fileName}");
+        $filePath = resource_path("$namespace/$fileName");
 
         $template = '<x-cms::input.text name="%s" value="{{ $%s->%s }}" label="%s" :required="true" />';
 
@@ -322,9 +354,12 @@ class MakeCmsControllerAndService extends Command
 
         $this->generateFile($stubPath, $filePath, $replacements);
 
-        $this->info("Blade file {$fileName} created successfully!");
+        $this->info("Blade file $fileName created successfully!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function updateRoute(): void
     {
         $className = $this->getStudlyDummy();
@@ -347,9 +382,12 @@ class MakeCmsControllerAndService extends Command
             File::put($filePath, $fileContent);
         }
 
-        $this->info("Route for {$this->module} generated successfully in routes/cms.php!");
+        $this->info("Route for $this->module generated successfully in routes/cms.php!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function updateMenu(): void
     {
         $className = $this->getStudlyDummy();
@@ -364,9 +402,12 @@ class MakeCmsControllerAndService extends Command
 
         $this->appendFile($stubPath, $filePath, $replacements);
 
-        $this->info("Menu for module {$this->module} added successfully!");
+        $this->info("Menu for module $this->module added successfully!");
     }
 
+    /**
+     * @throws Exception
+     */
     private function updatePermission(): void
     {
         $className = $this->getStudlyDummy();
@@ -377,19 +418,19 @@ class MakeCmsControllerAndService extends Command
         $replacements = [
             '{{ className }}' => $className,
         ];
-        $fileContent = File::get($stubPath);
-        $template = $this->replaceContent($stubPath, $replacements);
 
+        $template = $this->replaceContent($stubPath, $replacements);
         $fileContent = File::get($filePath);
+
         $alreadyExists = preg_match($this->generatePattern($template), $fileContent);
         if (!$alreadyExists) {
-            $fileContent = preg_replace('/Register Permissions/', "Register Permissions\n\t\t{$template}", $fileContent, 1);
+            $fileContent = preg_replace('/Register Permissions/', "Register Permissions\n\t\t$template", $fileContent, 1);
             File::put($filePath, $fileContent);
 
             Artisan::call("db:seed --class RolesAndPermissionsTableSeeder");
             Artisan::call("db:seed --class AdminsTableSeeder");
         }
 
-        $this->info("Permission for module {$this->module} added successfully!");
+        $this->info("Permission for module $this->module added successfully!");
     }
 }
