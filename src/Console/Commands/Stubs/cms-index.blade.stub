@@ -54,6 +54,19 @@
               </x-cms::alert>
             @endif
 
+            {{-- Search form --}}
+            <x-cms::filters.form-search>
+              <div class="row mt-4 mb-3 px-4">
+                <div class="col-md-8">
+                  <x-cms::filters.select-perpage />
+                </div>
+                <div class="col-md-4">
+                  <x-cms::filters.text-search />
+                </div>
+              </div>
+              <x-cms::filters.sort />
+            </x-cms::filters.form-search>
+
             <div class="table-responsive">
               <table class="table align-items-center table-flush">
                 <thead class="thead-light">
