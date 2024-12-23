@@ -30,7 +30,6 @@ class {{ className }}
     public function update({{ modelName }} ${{ camelDummy }}, {{ storeRequestName }} $request): {{ modelName }}
     {
         ${{ camelDummy }}
-            ->query()
             ->update($request->validated());
         return ${{ camelDummy }};
     }
