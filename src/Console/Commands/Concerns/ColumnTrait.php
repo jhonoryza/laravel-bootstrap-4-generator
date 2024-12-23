@@ -19,24 +19,24 @@ trait ColumnTrait
     {
         $table = $this->getTableName();
 
-        /**@var DatabaseManager $database */
+        /** @var DatabaseManager $database */
         $database = app('db');
 
         $schemaBuilder = $database->getSchemaBuilder();
 
-        if (!($schemaBuilder instanceof MySqlBuilder || $schemaBuilder instanceof PostgresBuilder)) {
+        if (! ($schemaBuilder instanceof MySqlBuilder || $schemaBuilder instanceof PostgresBuilder)) {
             throw new ErrorException('Unsupported database / schema builder.');
         }
 
-        /**@var PostgresGrammar $grammar */
+        /** @var PostgresGrammar $grammar */
         $grammar = $schemaBuilder instanceof PostgresBuilder ?
-            new PostgresGrammar() : new MySqlGrammar();
+            new PostgresGrammar : new MySqlGrammar;
 
         $sqlStatement = $grammar->compileColumns('public', $table);
 
         $results = $schemaBuilder->getConnection()->select($sqlStatement);
 
-        $columnList =  $schemaBuilder->getConnection()->getPostProcessor()->processColumns($results);
+        $columnList = $schemaBuilder->getConnection()->getPostProcessor()->processColumns($results);
 
         // $this->info(collect($columnList));
         return collect($columnList);
@@ -47,7 +47,7 @@ trait ColumnTrait
      */
     protected function getFillableColumnList(): Collection
     {
-        $columns = [];
+        $columns    = [];
         $columnList = $this->getColumnList()->toArray();
 
         foreach ($columnList as $column) {
@@ -67,11 +67,10 @@ trait ColumnTrait
         'deleted_at',
     ];
 
-    protected function isFillable(string | null $columnName): bool
+    protected function isFillable(?string $columnName): bool
     {
-        return !(
-            in_array($columnName, self::$notFillableColumns, true) ||
-            ($columnName === null)
+        return ! (
+            in_array($columnName, self::$notFillableColumns, true) || ($columnName === null)
         );
     }
 }
