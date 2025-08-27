@@ -1,4 +1,4 @@
-# RGB Laravel Basecode Generator
+# Laravel Bootstrap 4 Generator
 
 ## DB Support
 
@@ -13,7 +13,7 @@
 ## Install
 
 ```bash
-composer require --dev jhonoryza/rgb-laravelwebbasecode-gen
+composer require --dev jhonoryza/laravel-bootstrap-4-generator
 ```
 
 ## Start
