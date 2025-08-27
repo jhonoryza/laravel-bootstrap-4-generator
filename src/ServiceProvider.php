@@ -1,11 +1,11 @@
 <?php
 
-namespace Jhonoryza\Rgb\BasecodeGen;
+namespace Jhonoryza\Bootstrap\Generator;
 
-use Illuminate\Support\ServiceProvider;
-use Jhonoryza\Rgb\BasecodeGen\Console\Commands\MakeCmsControllerAndService;
+use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Jhonoryza\Bootstrap\Generator\Console\Commands\MakeCmsControllerAndService;
 
-class BasecodeGenProvider extends ServiceProvider
+class ServiceProvider extends LaravelServiceProvider
 {
     public function register(): void
     {

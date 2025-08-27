@@ -1,17 +1,17 @@
 <?php
 
-namespace Jhonoryza\Rgb\BasecodeGen\Console\Commands;
+namespace Jhonoryza\Bootstrap\Generator\Console\Commands;
 
 use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\ColumnTrait;
-use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\FactoryTrait;
-use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\HelperTrait;
-use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\ReplaceKeywordsTrait;
-use Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns\ValidationTrait;
+use Jhonoryza\Bootstrap\Generator\Console\Commands\Concerns\ColumnTrait;
+use Jhonoryza\Bootstrap\Generator\Console\Commands\Concerns\FactoryTrait;
+use Jhonoryza\Bootstrap\Generator\Console\Commands\Concerns\HelperTrait;
+use Jhonoryza\Bootstrap\Generator\Console\Commands\Concerns\ReplaceKeywordsTrait;
+use Jhonoryza\Bootstrap\Generator\Console\Commands\Concerns\ValidationTrait;
 
 use function Laravel\Prompts\text;
 

@@ -1,17 +1,17 @@
 {
-    "name": "jhonoryza/rgb-laravelwebbasecode-gen",
+    "name": "jhonoryza/laravel-bootstrap-4-generator",
     "type": "library",
     "license": "MIT",
     "version": "0.0.1",
     "autoload": {
         "psr-4": {
-            "Jhonoryza\\Rgb\\BasecodeGen\\": "src/"
+            "Jhonoryza\\Bootstrap\\Generator\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Jhonoryza\\Rgb\\BasecodeGen\\BasecodeGenProvider"
+                "Jhonoryza\\Bootstrap\\Generator\\ServiceProvider"
             ]
         }
     },

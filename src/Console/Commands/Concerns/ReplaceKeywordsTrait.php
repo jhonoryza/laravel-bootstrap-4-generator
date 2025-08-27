@@ -1,6 +1,6 @@
 <?php
 
-namespace Jhonoryza\Rgb\BasecodeGen\Console\Commands\Concerns;
+namespace Jhonoryza\Bootstrap\Generator\Console\Commands\Concerns;
 
 use Illuminate\Support\Str;
 
