@@ -77,7 +77,7 @@ trait HelperTrait
      */
     protected function getStubPath(string $filename): string
     {
-        $customPath = app()->basePath('stubs/rgb_basecode_gen/' . $filename);
+        $customPath = app()->basePath('stubs/laravel_bootstrap_4_generator/' . $filename);
 
         return file_exists($customPath)
             ? $customPath

@@ -18,8 +18,8 @@ class ServiceProvider extends LaravelServiceProvider
             return;
         }
         $this->publishes([
-            __DIR__ . '/Console/Commands/Stubs' => base_path('stubs/rgb_basecode_gen'),
-        ], 'rgb-stubs');
+            __DIR__ . '/Console/Commands/Stubs' => base_path('stubs/laravel_bootstrap_4_generator'),
+        ], 'laravel_bootstrap_4_generator_stubs');
 
         $this->commands([
             MakeCmsControllerAndService::class,
